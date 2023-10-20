@@ -1,15 +1,8 @@
-from databases import DatabaseURL
 from starlette.config import Config
 from starlette.datastructures import Secret
 
 
-DEBUG = 1
-
-
-if DEBUG:
-    config = Config(".env")
-else:
-    config = Config(".env.dev")
+config = Config(".env")
 
 
 PROJECT_NAME = "scout-api"
@@ -27,6 +20,6 @@ POSTGRES_DB = config("API_DB", cast=str)
 
 DATABASE_URL = config(
     "DATABASE_URL",
-    cast=DatabaseURL,
     default=f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 )
+

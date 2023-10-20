@@ -1,5 +1,6 @@
-from sqlalchemy import ForeignKey, JSON
+from sqlalchemy import ForeignKey, JSON, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.dialects.postgresql import ARRAY
 from typing import List, Optional
 import time
 
@@ -18,6 +19,7 @@ class Entity(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, nullable=False, index=True, unique=True)
     name: Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
     description: Mapped[Optional[str]]
+    extra_data: Mapped[Optional[str]] = mapped_column(JSON)
     contact_info: Mapped[Optional[str]]
     domains: Mapped[Optional[List['Domain']]] = relationship(back_populates='entity')
 
@@ -41,6 +43,7 @@ class Domain(Base):
     average_crawl_time: Mapped[Optional[int]]
     server: Mapped[Optional[str]]
     description: Mapped[Optional[str]]
+    extra_data: Mapped[Optional[str]] = mapped_column(JSON)
     number_of_finished_crawls: Mapped[int] = mapped_column(default=0)
     number_of_webpages: Mapped[int] = mapped_column(default=0)
     site_structure: Mapped[Optional[str]] = mapped_column(JSON)
@@ -67,8 +70,9 @@ class Webpage(Base):
     page_title: Mapped[Optional[str]]
     meta_title: Mapped[Optional[str]]
     meta_description: Mapped[Optional[str]]
-    # on_page_urls: Mapped[Optional[List[str]]]
-    # on_page_processed_urls: Mapped[Optional[List[str]]]
+    on_page_urls = mapped_column(ARRAY(String))
+    on_page_processed_urls = mapped_column(ARRAY(String))
+    extra_data: Mapped[Optional[str]] = mapped_column(JSON)
     number_of_successful_requests: Mapped[int] = mapped_column(default=0)
     number_of_unsuccessful_requests: Mapped[int] = mapped_column(default=0)
     is_active: Mapped[bool] = mapped_column(default=False)

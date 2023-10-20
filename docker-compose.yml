@@ -8,7 +8,8 @@ services:
       dockerfile: ./compose/local/api/Dockerfile
       args:
         - DEV=true
-    command:  bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; ./start.sh'
+    # command: sh -c 'while !</dev/tcp/db/5432; do sleep 1; done; ./start.sh'
+    command: sh -c '../entrypoint.sh && ../start.sh'
     image: scout-api
     container_name: scout-api
     volumes:
@@ -16,7 +17,7 @@ services:
     ports:
       - "8008:8000"
     env_file:
-      - .env-dev
+      - .env.dev
     depends_on:
       - scout-api-db
     networks:
@@ -29,8 +30,10 @@ services:
       - scout-api-db_data:/var/lib/postgresql/data/
     ports:
       - "127.0.0.1:55432:5432"
-    env_file:
-      - .env-dev
+    environment:
+      - POSTGRES_USER=${API_USER}
+      - POSTGRES_PASSWORD=${API_PASSWORD}
+      - POSTGRES_DB=${API_DB}
     networks:
       - tor-scout-network
 
@@ -40,7 +43,7 @@ volumes:
 
 
 networks:
-  tor-scout:
+  tor-scout-network:
     name: tor-scout-network
     driver: bridge
     ipam:

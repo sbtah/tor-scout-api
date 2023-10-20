@@ -4,6 +4,7 @@ LABEL maintainer='Grzegorz Zygan'
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
+WORKDIR /api
 ARG DEV=false
 
 COPY ./api/requirements.txt /tmp/requirements.txt
@@ -32,4 +33,4 @@ RUN pip install --upgrade pip && \
 
 
 USER api-user
-WORKDIR /api
+
