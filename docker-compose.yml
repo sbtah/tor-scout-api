@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+
+  scout-api:
+    build:
+      context: .
+      dockerfile: ./compose/local/api/Dockerfile
+      args:
+        - DEV=true
+    command:  bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; ./start.sh'
+    image: scout-api
+    container_name: scout-api
+    volumes:
+      - ./api:/api
+    ports:
+      - "8008:8000"
+    env_file:
+      - .env-dev
+    depends_on:
+      - scout-api-db
+    networks:
+      - tor-scout-network
+
+  scout-api-db:
+    image: postgres:15-alpine
+    container_name: scout-api-db
+    volumes:
+      - scout-api-db_data:/var/lib/postgresql/data/
+    ports:
+      - "127.0.0.1:55432:5432"
+    env_file:
+      - .env-dev
+    networks:
+      - tor-scout-network
+
+
+volumes:
+  scout-api-db_data:
+
+
+networks:
+  tor-scout:
+    name: tor-scout-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.96.0/24

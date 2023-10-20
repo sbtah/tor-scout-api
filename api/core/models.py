@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, ForeignKey, JSON
+from sqlalchemy import ForeignKey, JSON
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import List, Optional
 import time
@@ -59,3 +59,21 @@ class Webpage(Base):
     domain: Mapped['Domain'] = relationship(back_populates='webpages')
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, nullable=False, index=True, unique=True)
+    url: Mapped[str] = mapped_column(unique=True, index=True)
+    url_after_request: Mapped[Optional[str]]
+    last_http_status: Mapped[Optional[str]]
+    average_response_time: Mapped[Optional[float]]
+    html: Mapped[Optional[str]]
+    page_title: Mapped[Optional[str]]
+    meta_title: Mapped[Optional[str]]
+    meta_description: Mapped[Optional[str]]
+    # on_page_urls: Mapped[Optional[List[str]]]
+    # on_page_processed_urls: Mapped[Optional[List[str]]]
+    number_of_successful_requests: Mapped[int] = mapped_column(default=0)
+    number_of_unsuccessful_requests: Mapped[int] = mapped_column(default=0)
+    is_active: Mapped[bool] = mapped_column(default=False)
+    created: Mapped[int] = mapped_column(default=int(time.time()))
+    last_visit: Mapped[Optional[int]]
+
+    def __repr__(self):
+        return self.url
