@@ -70,8 +70,8 @@ class Webpage(Base):
     page_title: Mapped[Optional[str]]
     meta_title: Mapped[Optional[str]]
     meta_description: Mapped[Optional[str]]
-    on_page_urls = mapped_column(ARRAY(String))
-    on_page_processed_urls = mapped_column(ARRAY(String))
+    on_page_urls = mapped_column(ARRAY(String), nullable=True)
+    on_page_processed_urls = mapped_column(ARRAY(String), nullable=True)
     extra_data: Mapped[Optional[str]] = mapped_column(JSON)
     number_of_successful_requests: Mapped[int] = mapped_column(default=0)
     number_of_unsuccessful_requests: Mapped[int] = mapped_column(default=0)
